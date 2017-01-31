@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this,
-                        "Jorge la chupa!!!!", Toast.LENGTH_LONG).show();
+                        "Jorge la chups!!!!", Toast.LENGTH_LONG).show();
             }
         });
     }
