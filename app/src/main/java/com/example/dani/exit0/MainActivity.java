@@ -24,12 +24,13 @@ public class MainActivity extends AppCompatActivity {
             androidButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Toast.makeText(MainActivity.this,"Click",Toast.LENGTH_SHORT).show();
                     camara.controlarFlash();
                 }
             });
         }
         catch(Exception e){
-            e.printStackTrace();
+            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
         }
 
     }
