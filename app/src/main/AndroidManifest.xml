@@ -14,7 +14,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+        <uses-permission android:name="android.permission.CAMERA" />
+        <uses-permission
+            android:name="android.permission.FLASHLIGHT"
+            android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
+            android:protectionLevel="normal" />
     </application>
 
 </manifest>
