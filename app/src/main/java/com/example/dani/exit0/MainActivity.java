@@ -1,8 +1,10 @@
 package com.example.dani.exit0;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private Camara camara;
     private final int MY_PERMISSIONS_REQUEST_CAMERA = 0;
     private boolean tengoPermiso = false;
-    private boolean iniciado = false;
+    private boolean flashEncendido = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +31,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         try {
-            solicitarPermiso();
+            androidButton = (Button) findViewById(R.id.button);
+            androidButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
+                    CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+                    if(flashEncendido){
+                        try {
+                            String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
+                            camManager.setTorchMode(cameraId, false);
+                            flashEncendido = false;
+                        }
+                        catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        try {
+                            String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
+                            camManager.setTorchMode(cameraId, true);
+                            flashEncendido = true;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
 
-            if (tengoPermiso && !iniciado) {
-                inicializar();
-            }
 
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -41,17 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void inicializar() throws Exception {
-        camara = new Camara(this);
-        androidButton = (Button) findViewById(R.id.button);
-        androidButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
-                camara.controlarFlash();
-            }
-        });
-    }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
@@ -83,46 +97,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void solicitarPermiso() throws Exception {
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-
-            Toast.makeText(this, "La version de android es anterior a Android 6" + Build.VERSION.SDK_INT, Toast.LENGTH_LONG).show();
-
-        } else {
-
-            int resultado = checkSelfPermission(Manifest.permission.CAMERA);
-
-            if (resultado != PackageManager.PERMISSION_GRANTED) {
-
-                Toast.makeText(this, "Solicitando permisos", Toast.LENGTH_LONG).show();
-                requestPermissions(new String[]{Manifest.permission.CAMERA},
-                        MY_PERMISSIONS_REQUEST_CAMERA);
-
-
-
-            } else if (resultado == PackageManager.PERMISSION_GRANTED) {
-
-                Toast.makeText(this, "Han sido concedidos los permisos ", Toast.LENGTH_LONG).show();
-                iniciado = true;
-                inicializar();
-
-            }
-
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (MY_PERMISSIONS_REQUEST_CAMERA == requestCode) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                tengoPermiso = true;
-            } else {
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            }
-        }
-
-
-    }
 }
 

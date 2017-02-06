@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraDevice;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -26,11 +27,7 @@ public class Camara {
         this.contexto = contexto;
         this.flashEncendido = false;
 
-
-
-
-
-            camara = Camera.open();
+          camara = Camera.open();
         if(camara == null){
             throw new Exception("No se ha podido recuperar la camara");
         }
