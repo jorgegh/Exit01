@@ -36,26 +36,42 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
+
                     CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-                    if(flashEncendido){
-                        try {
-                            String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
-                            camManager.setTorchMode(cameraId, false);
-                            flashEncendido = false;
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+
+                        if(!flashEncendido){
+                            flashEncendido=true;
+                            camara.encenderFlash();
+                        }else{
+                            flashEncendido=false;
+                            camara.apagarFlash();
                         }
-                        catch(Exception e){
-                            e.printStackTrace();
+
+
+                    }else{
+
+                        if(flashEncendido){
+                            try {
+                                String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
+                                camManager.setTorchMode(cameraId, false);
+                                flashEncendido = false;
+                            }
+                            catch(Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                        else {
+                            try {
+                                String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
+                                camManager.setTorchMode(cameraId, true);
+                                flashEncendido = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
-                    else {
-                        try {
-                            String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
-                            camManager.setTorchMode(cameraId, true);
-                            flashEncendido = true;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+
                 }
             });
 
