@@ -12,10 +12,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,42 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             camara = new Camara(this);
-
             androidButton = (Button) findViewById(R.id.button);
             androidButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
-
-                    CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-
-                        camara.controlarFlash();
-
-
-                    }else{
-
-                        if(flashEncendido){
-                            try {
-                                String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
-                                camManager.setTorchMode(cameraId, false);
-                                flashEncendido = false;
-                            }
-                            catch(Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-                        else {
-                            try {
-                                String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
-                                camManager.setTorchMode(cameraId, true);
-                                flashEncendido = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
+                    camara.controlarFlash();
                 }
             });
 
@@ -76,6 +50,50 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            int hasCameraPermission = checkSelfPermission(Manifest.permission.CAMERA);
+
+            List<String> permissions = new ArrayList<String>();
+
+            if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.CAMERA);
+
+            }
+            if (!permissions.isEmpty()) {
+                requestPermissions(permissions.toArray(new String[permissions.size()]), 111);
+            }
+        }
+
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 111: {
+                for (int i = 0; i < permissions.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        System.out.println("Permissions --> " + "Permission Granted: " + permissions[i]);
+
+
+                    } else if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                        System.out.println("Permissions --> " + "Permission Denied: " + permissions[i]);
+
+                    }
+                }
+            }
+            break;
+            default: {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
     }
 
 

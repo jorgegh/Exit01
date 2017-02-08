@@ -21,4 +21,10 @@
 
     </application>
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <permission android:name="android.permission.FLASHLIGHT"
+        android:permissionGroup="android.permission-group.HARDWARE_CONTROLS"
+        android:protectionLevel="normal"
+         />
+
 </manifest>
