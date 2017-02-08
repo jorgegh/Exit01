@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         try {
+            camara = new Camara(this);
+
             androidButton = (Button) findViewById(R.id.button);
             androidButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -40,13 +42,7 @@ public class MainActivity extends AppCompatActivity {
                     CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
-                        if(!flashEncendido){
-                            flashEncendido=true;
-                            camara.encenderFlash();
-                        }else{
-                            flashEncendido=false;
-                            camara.apagarFlash();
-                        }
+                        camara.controlarFlash();
 
 
                     }else{
