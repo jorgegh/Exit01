@@ -22,13 +22,12 @@ public class Camara {
     private Context contexto;
 
 
-
-    public Camara(Context contexto) throws Exception{
+    public Camara(Context contexto) throws Exception {
         this.contexto = contexto;
         this.flashEncendido = false;
 
-          camara = Camera.open();
-        if(camara == null){
+        camara = Camera.open();
+        if (camara == null) {
             throw new Exception("No se ha podido recuperar la camara");
         }
         preparaLinterna();
@@ -36,21 +35,20 @@ public class Camara {
     }
 
 
-
     private void preparaLinterna() throws Exception {
 
         tieneFlash = this.contexto.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
-        if(!tieneFlash){
+        if (!tieneFlash) {
             liberarCamara();
             throw new Exception("El dispositivo no tiene flash");
         }
 
     }
 
-    public void liberarCamara(){
-        if(flashEncendido){
+    public void liberarCamara() {
+        if (flashEncendido) {
             apagarFlash();
         }
         camara.release();
@@ -61,18 +59,18 @@ public class Camara {
         if (!flashEncendido) {
             encenderFlash();
         } else {
-           apagarFlash();
+            apagarFlash();
         }
     }
 
-    public void encenderFlash(){
+    public void encenderFlash() {
         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
         camara.setParameters(parameters);
         camara.startPreview();
         flashEncendido = true;
     }
 
-    public void apagarFlash(){
+    public void apagarFlash() {
         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
         camara.setParameters(parameters);
         camara.stopPreview();
