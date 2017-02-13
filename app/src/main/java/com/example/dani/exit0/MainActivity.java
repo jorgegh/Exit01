@@ -40,24 +40,22 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Click", Toast.LENGTH_SHORT).show();
 
                     CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                         camara.controlarFlash();
 
 
-                    }else{
+                    } else {
 
-                        if(flashEncendido){
+                        if (flashEncendido) {
                             try {
                                 String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
                                 camManager.setTorchMode(cameraId, false);
                                 flashEncendido = false;
-                            }
-                            catch(Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }
-                        else {
+                        } else {
                             try {
                                 String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
                                 camManager.setTorchMode(cameraId, true);
