@@ -1,7 +1,9 @@
 package com.example.dani.exit0;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 import java.util.Calendar;
@@ -47,8 +49,37 @@ public class Widget extends AppWidgetProvider {
         //Actualizamos la hora en el control del widget
         controles.setTextViewText(R.id.LblHora, hora);
 
+        Intent intent = new Intent("net.sgoliver.android.widgets.ACTUALIZAR_WIDGET");
+        intent.putExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context, widgetId,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        controles.setOnClickPendingIntent(R.id.BtnActualizar, pendingIntent);
+
         //Notificamos al manager de la actualización del widget actual
         appWidgetManager.updateAppWidget(widgetId, controles);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals("net.sgoliver.android.widgets.ACTUALIZAR_WIDGET")) {
+            //Obtenemos el ID del widget a actualizar
+            int widgetId = intent.getIntExtra(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+
+            //Obtenemos el widget manager de nuestro contexto
+            AppWidgetManager widgetManager =
+                    AppWidgetManager.getInstance(context);
+
+            //Actualizamos el widget
+            if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                actualizarWidget(context, widgetManager, widgetId);
+            }
+        }
     }
 }
 
